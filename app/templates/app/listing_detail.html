@@ -1,0 +1,15 @@
+﻿<!-- your_app/templates/your_app/listing_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ listing.title }} Details</title>
+</head>
+<body>
+    <h1>{{ listing.title }} Details</h1>
+    <p>Description: {{ listing.description }}</p>
+    <p>Current Bid: ${{ listing.current_bid }}</p>
+    <!-- Add more details as needed -->
+    <a href="{% url 'your_app_name:place_bid' listing_id=listing.id %}">Place Bid</a>
+</body>
+</html>

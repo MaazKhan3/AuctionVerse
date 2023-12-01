@@ -1,0 +1,19 @@
+﻿<!-- your_app/templates/your_app/active_listings.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Active Listings</title>
+</head>
+<body>
+    <h1>Active Listings</h1>
+    {% for listing in listings %}
+    <div>
+        <h2>{{ listing.title }}</h2>
+        <p>Description: {{ listing.description }}</p>
+        <p>Current Bid: ${{ listing.current_bid }}</p>
+        <a href="{% url 'your_app_name:listing_detail' listing_id=listing.id %}">View Details</a>
+    </div>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,14 @@
+﻿<!-- your_app/templates/your_app/user_bids.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Bids</title>
+</head>
+<body>
+    <h1>Your Bids</h1>
+    {% for bid in user_bids %}
+    <p>You bid ${{ bid.amount }} on {{ bid.listing.title }}</p>
+    {% endfor %}
+</body>
+</html>
