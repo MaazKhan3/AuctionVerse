@@ -3,7 +3,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.db.models import Q
+from django.core.exceptions import ValidationError
 from .models import Listing, Bid, TransactionHistory, Payment
+from .forms import BidForm
 
 def active_listings(request):
     active_listings = Listing.objects.filter(status='active')
@@ -17,21 +19,24 @@ def listing_detail(request, listing_id):
 @login_required
 def place_bid(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
+    form = BidForm(request.POST or None)
 
-    if request.method == 'POST':
-        bid_amount = request.POST.get('bid_amount')
-        # Perform validation on the bid_amount, e.g., it should be higher than the current bid.
+    if request.method == 'POST' and form.is_valid():
+        bid_amount = form.cleaned_data['bid_amount']
 
-        Bid.objects.create(
-            bid_amount=bid_amount,
-            bid_time=timezone.now(),
-            bidder=request.user,
-            listing=listing
-        )
+        # Validate bid amount
+        if bid_amount <= listing.current_bid:
+            form.add_error('bid_amount', 'Bid amount must be higher than the current bid.')
+        else:
+            Bid.objects.create(
+                bid_amount=bid_amount,
+                bid_time=timezone.now(),
+                bidder=request.user,
+                listing=listing
+            )
+            return redirect('listing_detail', listing_id=listing_id)
 
-        return redirect('listing_detail', listing_id=listing_id)
-
-    return render(request, 'app/place_bid.html', {'listing': listing})
+    return render(request, 'app/place_bid.html', {'listing': listing, 'form': form})
 
 @login_required
 def user_bids(request):
